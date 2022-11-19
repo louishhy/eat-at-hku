@@ -1,31 +1,121 @@
 [
     {
         "canteenName": "27 Kebab House", 
+        "address": "1/F, Fong Shu Chuen Amenities Centre", 
         "large_img_url": "images/canteen_large/27_kebab_house.png"
     },
     
     {
         "canteenName": "Alfafa Cafe", 
+        "address": "G/F The Jockey Club Tower, Central Podium, Centennial Campus", 
         "large_img_url": "images/canteen_large/alfafa_cafe.png"
     },
 
     {
         "canteenName": "Bay View Restaurant", 
+        "address": "LG/F, 6 Sassoon Road", 
         "large_img_url": "images/canteen_large/bay_view_restaurant.png"
     },
 
     {
         "canteenName": "BIJAS Vegetarian", 
+        "address": "G/F Run Run Shaw Tower, Central Podium, Centennial Campus", 
         "large_img_url": "images/canteen_large/BIJAS_vegetarian.png"
     },
 
     {
         "canteenName": "Cafe 330", 
+        "address": "2/F, Chong Yuet Ming Amenities Centre", 
         "large_img_url": "images/canteen_large/cafe330.png"
     },
 
     {
         "canteenName": "Cafeteria by Favilla", 
+        "address": "Shop G. 01, G/F, Composite Building, Main Campus", 
         "large_img_url": "images/canteen_large/cafeteria_by_favilla.png"
+    },
+
+    {
+        "canteenName": "Coffee Kiosk by Cupping Room Coffee Roaster", 
+        "address": "G/F Lobby, William M.W. Mong Block, Faculty of Medicine Building, 21 Sassoon Road", 
+        "large_img_url": "images/canteen_large/cafeteria_by_favilla.png"
+    },
+
+    {
+        "canteenName": "CYMAC Restaurant", 
+        "address": "4/F, Chong Yuet Ming Cultural Centre", 
+        "large_img_url": "images/canteen_large/CYMAC.png"
+    },
+
+    {
+        "canteenName": "FSCAC Restaurant", 
+        "address": "2/F, Fong Shu Chuen Amenities Centre", 
+        "large_img_url": "images/canteen_large/FSCAC_restaurant.png"
+    },
+
+    {
+        "canteenName": "Gourmet Asia", 
+        "address": "G/F, Run Run Shaw Tower, Centennial Campus", 
+        "large_img_url": "images/canteen_large/gourmet_asia.png"
+    },
+
+    {
+        "canteenName": "Kiosk by The Sandwich Club", 
+        "address": "Run Run Shaw Podium", 
+        "large_img_url": "images/canteen_large/koisk_by_the_sandwich_club.png"
+    },
+
+    {
+        "canteenName": "Oliver's Super Sandwiches", 
+        "address": "LG/F, The Jockey Club Tower, Central Podium Centennial Campus", 
+        "large_img_url": "images/canteen_large/oliver_s_super_sandwiches.png"
+    },
+
+    {
+        "canteenName": "Restaurant 1887", 
+        "address": "7/F, William M.W. Mong Block, 21 Sassoon Road", 
+        "large_img_url": "images/canteen_large/restaurant_1887.png"
+    },
+
+    {
+        "canteenName": "Starbucks Coffee", 
+        "address": "Shop G. 03, G/F, Composite Building, Main Campus", 
+        "large_img_url": "images/canteen_large/starbucks_coffee.png"
+    },
+    
+    {
+        "canteenName": "SUBWAY Sassoon Road Campus", 
+        "address": "Fan Pui Garden, LG/F, William M.W. Mong Block, 21 Sassoon Road", 
+        "large_img_url": "images/canteen_large/subway_sassoon_road_campus.png"
+    },
+
+    {
+        "canteenName": "SUBWAY", 
+        "address": "Run Run Shaw Podium", 
+        "large_img_url": "images/canteen_large/koisk_by_the_sandwich_club.png"
+    },
+
+    {
+        "canteenName": "Sweet Bandot", 
+        "address": "Shop G. 05, G/F, Composite Building, Main Campus", 
+        "large_img_url": "images/canteen_large/sweet_bandot.png"
+    },
+
+    {
+        "canteenName": "The Coffee Academics", 
+        "address": "G/F, Library Building (Old Wing)", 
+        "large_img_url": "images/canteen_large/the_coffee_academics.png"
+    },
+
+    {
+        "canteenName": "U Deli", 
+        "address": "Shop G. 02, G/F, Composite Building, Main Campus", 
+        "large_img_url": "images/canteen_large/U_deli.png"
+    },
+
+    {
+        "canteenName": "Union Restaurant", 
+        "address": "4/F Haking Wong Building (Podium)", 
+        "large_img_url": "images/canteen_large/union_restaurant.png"
     }
 ]
