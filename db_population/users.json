@@ -1,0 +1,37 @@
+[
+    {
+        "username": "louishhy",
+        "password": "123456",
+        "isAdmin": true
+    },
+
+    {
+        "username": "zwderek",
+        "password": "123456",
+        "isAdmin": true
+    },
+
+    {
+        "username": "amy",
+        "password": "123456",
+        "isAdmin": false
+    },
+
+    {
+        "username": "bob",
+        "password": "123456",
+        "isAdmin": false
+    },
+
+    {
+        "username": "charlie",
+        "password": "123456",
+        "isAdmin": false
+    },
+
+    {
+        "username": "dave",
+        "password": "123456",
+        "isAdmin": false
+    }
+]

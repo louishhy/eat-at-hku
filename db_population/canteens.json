@@ -1,0 +1,31 @@
+[
+    {
+        "canteenName": "27 Kebab House", 
+        "large_img_url": "images/canteen_large/27_kebab_house.png"
+    },
+    
+    {
+        "canteenName": "Alfafa Cafe", 
+        "large_img_url": "images/canteen_large/alfafa_cafe.png"
+    },
+
+    {
+        "canteenName": "Bay View Restaurant", 
+        "large_img_url": "images/canteen_large/bay_view_restaurant.png"
+    },
+
+    {
+        "canteenName": "BIJAS Vegetarian", 
+        "large_img_url": "images/canteen_large/BIJAS_vegetarian.png"
+    },
+
+    {
+        "canteenName": "Cafe 330", 
+        "large_img_url": "images/canteen_large/cafe330.png"
+    },
+
+    {
+        "canteenName": "Cafeteria by Favilla", 
+        "large_img_url": "images/canteen_large/cafeteria_by_favilla.png"
+    }
+]
