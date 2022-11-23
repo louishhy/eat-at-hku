@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+    <androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/white">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp">
+            <ImageView
+
+                android:src="@drawable/hku"
+                android:background="@color/green"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="25dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp">
+
+            </ImageView>
+
+            <LinearLayout
+                android:id="@+id/restaurantImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="90dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/restaurantName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+
+                        android:text="Name"
+                        android:textSize="16sp"
+                        android:textStyle="bold">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/restaurantAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="Address testing"
+                        android:textSize="14sp"
+                        android:textStyle="normal">
+
+                    </TextView>
+
+                    <LinearLayout
+                        android:layout_marginLeft="15dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text="Rating"
+                            android:textSize="12dp"
+                            android:textStyle="normal"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content">
+
+                        </TextView>
+
+                        <per.wsj.library.AndRatingBar
+                            android:id="@+id/restaurantItemRating"
+                            android:isIndicator="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="14dp"
+                            app:starColor="@color/yellow"
+                            app:bgDrawable="@color/tansparentColor"
+                            android:numStars="5"
+                            android:rating="2.5"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_marginLeft="15dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text="Congestion"
+                            android:textSize="12dp"
+                            android:textStyle="normal"
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content">
+
+                        </TextView>
+
+                        <per.wsj.library.AndRatingBar
+                            android:id="@+id/restaurantItemCongestion"
+                            android:isIndicator="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="14dp"
+                            app:starColor="@color/yellow"
+                            app:bgDrawable="@color/tansparentColor"
+                            android:numStars="5"
+                            android:rating="3.5"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/restaurantUpdateButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    android:padding="0dp"
+                    android:text="+"
+                    android:textSize="28dp"
+                    android:textStyle="normal"
+                    app:shapeAppearanceOverlay="@style/Button6"
+                    android:backgroundTint="@color/yellow"
+                    app:iconPadding="0dp" />
+
+                <Button
+                    android:id="@+id/restaurantPage"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    android:padding="0dp"
+                    android:text=">"
+                    android:textSize="22dp"
+                    android:textStyle="normal|bold"
+                    app:backgroundTint="@color/green"
+                    app:iconPadding="0dp"
+                    app:shapeAppearanceOverlay="@style/Button6">
+
+                </Button>
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
