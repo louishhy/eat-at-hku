@@ -14,10 +14,10 @@ router.post('/verification', async (req, res) => {
     let docs = await usersCollection.find({"username": username, "password": password})
     console.log(`Matches: ${docs.length}, for username ${username} password ${password}`)
     if (docs.length != 0){
-        res.send("succeed")
+        res.json({"result": "success"})
     }
     else{
-        res.send("failure")
+        res.json({"result": "failed"})
     }
 })
 

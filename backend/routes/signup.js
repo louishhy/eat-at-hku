@@ -14,7 +14,7 @@ router.post('/', async function(req, res){
     // Ensure the username does not exist.
     let docs = await usersCollection.find({"username": username})
     if (docs.length != 0){
-        res.send("already exists")
+        res.json({"result": "exists"})
         return
     }
 
@@ -22,11 +22,11 @@ router.post('/', async function(req, res){
         await usersCollection.insert({"username": username, "password": password, "isAdmin": isAdmin})
     }
     catch (err){
-        console.trace("Error in inserting the record")
+        console.trace(err)
         res.status(500).send("Error in inserting the record")
     }
     
-    res.send("succeed")
+    res.json({"result": "succeed"})
 })
 
 module.exports = router
