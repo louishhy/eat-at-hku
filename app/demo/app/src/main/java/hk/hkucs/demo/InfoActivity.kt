@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley.newRequestQueue
 import org.json.JSONArray
 import org.json.JSONObject
 
+@Suppress("RedundantSamConstructor")
 class InfoActivity: AppCompatActivity() {
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,12 +32,12 @@ class InfoActivity: AppCompatActivity() {
             val url = "http://10.68.104.199:8081/test"
             val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
                 Response.Listener { response ->
-                    infoResponse.text = response.toString()
-                    Log.w("myTag", "2")
+                    infoResponse.text = response.get("result").toString()
+                    //Log.w("myTag", "2")
                 },
                 Response.ErrorListener { error ->
                     infoResponse.text = error.toString()
-                    Log.w("myTag", error.toString())
+                    //Log.w("myTag", error.toString())
                 }
             )
             newRequestQueue(this).add(jsonObjectRequest)

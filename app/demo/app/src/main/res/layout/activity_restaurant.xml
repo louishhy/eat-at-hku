@@ -72,6 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp">
                 <ImageView
+                    android:id="@+id/restaurantPageImage"
                     android:src="@drawable/hku_image"
                     android:adjustViewBounds="false"
                     android:scaleType="fitXY"
@@ -158,11 +159,11 @@
                             android:id="@+id/restaurantPageDescription"
                             android:layout_marginTop="12dp"
                             android:layout_marginBottom="12dp"
-                            android:textSize="16dp"
+                            android:textSize="12dp"
                             android:gravity="center_vertical"
                             android:textStyle="normal"
                             android:text="Testing"
-                            android:layout_width="280dp"
+                            android:layout_width="200dp"
                             android:layout_height="80dp">
 
                         </TextView>

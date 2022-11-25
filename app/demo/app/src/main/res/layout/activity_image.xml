@@ -53,20 +53,14 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <RelativeLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ImageView
+        android:id="@+id/imagePageImage"
         android:background="@color/light_green"
-        android:orientation="vertical"
-        tools:context=".PageActivity">
+        android:src="@drawable/hku_image"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/imageRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-
-    </RelativeLayout>
+    </ImageView>
 
 </LinearLayout>

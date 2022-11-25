@@ -3,19 +3,28 @@ package hk.hkucs.demo.view
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.beust.klaxon.Json
+import com.beust.klaxon.Klaxon
 import hk.hkucs.demo.PageActivity
 import hk.hkucs.demo.R
 import hk.hkucs.demo.RestaurantActivity
 import hk.hkucs.demo.model.RestaurantData
+import org.json.JSONObject
 import per.wsj.library.AndRatingBar
 
-class RestaurantAdapter(val c:Context,val restaurantList:ArrayList<RestaurantData>, val username: String?):RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>() {
+@Suppress("RedundantSamConstructor")
+class RestaurantAdapter(val c:Context, val restaurantList:ArrayList<RestaurantData>, val username: String?):RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>() {
 
     inner class RestaurantViewHolder(val v:View):RecyclerView.ViewHolder(v){
         //var r_image:ImageView
@@ -64,6 +73,7 @@ class RestaurantAdapter(val c:Context,val restaurantList:ArrayList<RestaurantDat
             addDialog.setPositiveButton("Upload"){ dialog,_->
                 if (bar.rating >= 0.5f) {
                     //update action by username
+                    httpUpdateRestaurantCongestion(newList.restaurantID, bar.rating)
                     dialog.dismiss()
                 }
             }
@@ -72,6 +82,7 @@ class RestaurantAdapter(val c:Context,val restaurantList:ArrayList<RestaurantDat
         }
         holder.r_infopage.setOnClickListener() {
             val intent = Intent(c, RestaurantActivity::class.java)
+            intent.putExtra("r_id",newList.restaurantID)
             intent.putExtra("username",username)
             intent.putExtra("name",newList.restaurantName)
             intent.putExtra("address",newList.restaurantAddress)
@@ -84,10 +95,24 @@ class RestaurantAdapter(val c:Context,val restaurantList:ArrayList<RestaurantDat
     override fun getItemCount(): Int {
         return  restaurantList.size
     }
-    /*
-    private fun updateRestaurantCongestion() {
-        val inflater = LayoutInflater.from(parent.context)
-        val v  = inflater.inflate(R.layout.update_item,parent,false)
 
-    }*/
+    private fun httpUpdateRestaurantCongestion(ID: String, rating: Float) {
+        class Data(
+            @Json(index = 1) val canteenID: String,
+            @Json(index = 2) val userID: String,
+            @Json(index = 2) val congestionRanking: Double
+        )
+        val url = "http://10.68.104.199:8081/canteens/postcongestion"
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, url, JSONObject(Klaxon().toJsonString(Data(ID, "NULL", rating.toDouble()))),
+            Response.Listener { response ->
+                Log.w("myTag", response.toString())
+
+            }, Response.ErrorListener { error ->
+                Log.w("myTag", error.toString())
+            }
+        )
+        Volley.newRequestQueue(c).add(jsonObjectRequest)
+
+    }
 }

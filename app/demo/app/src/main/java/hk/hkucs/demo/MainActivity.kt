@@ -27,8 +27,6 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
-    var checkLogInFlag:Boolean = false
-
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,29 +62,22 @@ class MainActivity : AppCompatActivity() {
 
         logInButton.setOnClickListener {
             if (logInButton.text == "Log In") {
-                val loginName = findViewById<TextInputLayout>(R.id.username)
-                val loginPwd = findViewById<TextInputLayout>(R.id.password)
                 //log in clicked
-                checkLogIn(loginName.editText?.text.toString(), loginPwd.editText?.text.toString())
-                if (checkLogInFlag) {
-                    val intent = Intent(this@MainActivity, PageActivity::class.java)
-                    intent.putExtra("username",loginName.editText?.text.toString())
-                    //intent.putExtra("username", "admin")
-                    startActivity(intent)
-                    overridePendingTransition(R.anim.left_enter,R.anim.left_exit)
-                } else {
-                    infoBoard.text = "Invalid Username or Password"
+                val loginName = findViewById<TextInputLayout>(R.id.username).editText?.text.toString()
+                val loginPwd = findViewById<TextInputLayout>(R.id.password).editText?.text.toString()
+                if (loginName.isNotEmpty() && loginPwd.isNotEmpty()) {
+                    httpLogIn(loginName, loginPwd)
                 }
             } else {
-                val signupName = findViewById<EditText>(R.id.new_username)
-                val signupPwd1 = findViewById<EditText>(R.id.password01)
-                val signupPwd2 = findViewById<EditText>(R.id.password02)
-                if (signupPwd1.text == signupPwd2.text) {
-
+                //sign up clicked
+                val signupName = findViewById<TextInputLayout>(R.id.new_username).editText?.text.toString()
+                val signupPwd1 = findViewById<TextInputLayout>(R.id.password01).editText?.text.toString()
+                val signupPwd2 = findViewById<TextInputLayout>(R.id.password02).editText?.text.toString()
+                if (signupPwd1.isNotEmpty() && signupPwd1 == signupPwd2) {
+                    httpSignUp(signupName, signupPwd1)
                 } else {
                     infoBoard.text = "Please Check Your Password"
                 }
-                //sign up clicked
             }
         }
 
@@ -97,7 +88,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun checkLogIn(username:String, pwd:String) {
+    @Suppress("RedundantSamConstructor")
+    private fun httpLogIn(username:String, pwd:String) {
+        val infoBoard = findViewById<TextView>(R.id.infoBoard)
         class Data(
             @Json(index = 1) val username: String,
             @Json(index = 2) val password: String
@@ -107,16 +100,47 @@ class MainActivity : AppCompatActivity() {
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.POST, url, JSONObject(Klaxon().toJsonString(Data(username, pwd))),
             Response.Listener { response ->
-                Log.w("myTag1", response.toString())
+                //Log.w("myTag1", response.toString())
                 if (response.get("result").toString() == "success") {
-                    this.checkLogInFlag = true
+                    val intent = Intent(this@MainActivity, PageActivity::class.java)
+                    intent.putExtra("username",username)
+                    //intent.putExtra("username", "admin")
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.left_enter,R.anim.left_exit)
                 } else {
-                    this.checkLogInFlag = false
+                    infoBoard.text = "Invalid Username or Password"
                 }
-            }, Response.ErrorListener { error -> }
+            }, Response.ErrorListener { error ->
+                infoBoard.text = error.toString()
+            }
         )
         Volley.newRequestQueue(this).add(jsonObjectRequest)
-        Log.w("myTag2", this.checkLogInFlag.toString())
+    }
+
+    @Suppress("RedundantSamConstructor")
+    private fun httpSignUp(username:String, pwd:String) {
+        val infoBoard = findViewById<TextView>(R.id.infoBoard)
+        class Data(
+            @Json(index = 1) val username: String,
+            @Json(index = 2) val password: String,
+            @Json(index = 2) val isAdmin: String
+        )
+        val url = "http://10.68.104.199:8081/signup"
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, url, JSONObject(Klaxon().toJsonString(Data(username, pwd, "false"))),
+            Response.Listener { response ->
+                //Log.w("myTag1", response.toString())
+                if (response.get("result").toString() == "success") {
+                    infoBoard.text = "Account Created"
+                } else {
+                    infoBoard.text = "Username Already Exists"
+                }
+            }, Response.ErrorListener { error ->
+                infoBoard.text = error.toString()
+            }
+        )
+        Volley.newRequestQueue(this).add(jsonObjectRequest)
+
     }
 
 

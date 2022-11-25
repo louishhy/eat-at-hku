@@ -62,7 +62,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:text="Address testing"
-                        android:textSize="14sp"
+                        android:textSize="10dp"
                         android:textStyle="normal">
 
                     </TextView>

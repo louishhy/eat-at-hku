@@ -1,26 +1,44 @@
 package hk.hkucs.demo
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.media.Image
+import android.os.AsyncTask
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RatingBar
-import android.widget.TextView
+import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat.NestedScrollType
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.beust.klaxon.Json
+import com.beust.klaxon.Klaxon
 import hk.hkucs.demo.model.CommentData
 import hk.hkucs.demo.model.RestaurantData
 import hk.hkucs.demo.view.CommentAdapter
 import hk.hkucs.demo.view.RestaurantAdapter
+import org.json.JSONObject
 import per.wsj.library.AndRatingBar
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
 
+@Suppress("RedundantSamConstructor")
 class RestaurantActivity : AppCompatActivity() {
 
     private lateinit var recv: RecyclerView
@@ -28,9 +46,11 @@ class RestaurantActivity : AppCompatActivity() {
     private lateinit var commentAdapter: CommentAdapter
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_restaurant)
+        val r_id = intent.getStringExtra("r_id")
         val username = intent.getStringExtra("username")
         val extraDataRestaurantName = intent.getStringExtra("name")
         val extraDataRestaurantAddress = intent.getStringExtra("address")
@@ -45,18 +65,22 @@ class RestaurantActivity : AppCompatActivity() {
         val swipeRefresh = findViewById<SwipeRefreshLayout>(R.id.commentSwipeRefresh)
         val cardInfo = findViewById<CardView>(R.id.restaurantPageCardInfo)
 
+
         pageTitle.text = extraDataRestaurantName
-        pageRating.rating = 2.5f
-        pageCongestion.rating = 3.5f
-        pageDescription.text = "Name: ".plus(extraDataRestaurantName.plus("\nAddress: ".plus(extraDataRestaurantAddress)))
+        pageDescription.text = "Name: ".plus(extraDataRestaurantName.plus("\nAddress: ".plus(extraDataRestaurantAddress.plus("\nClick to view the image!"))))
+        httpRefreshPage(r_id!!)
+        httpGetImage(r_id!!)
+
 
         backToPageButton.setOnClickListener() {
-            val tmp = Intent(this@RestaurantActivity, PageActivity::class.java)
-            startActivity(tmp)
+            val intent = Intent(this@RestaurantActivity, PageActivity::class.java)
+            intent.putExtra("username",username)
+            startActivity(intent)
             overridePendingTransition(R.anim.right_enter,R.anim.right_exit)
         }
         cardInfo.setOnClickListener() {
             val intent = Intent(this@RestaurantActivity, ImageActivity::class.java)
+            intent.putExtra("r_id",r_id)
             intent.putExtra("username",username)
             intent.putExtra("restaurant",extraDataRestaurantName)
             intent.putExtra("address",extraDataRestaurantAddress)
@@ -75,7 +99,10 @@ class RestaurantActivity : AppCompatActivity() {
             addDialog.setPositiveButton("Upload"){ dialog,_->
                 if (bar.rating >= 0.5f) {
                     //update action
+                    httpUpdateRestaurantCongestion(r_id!!, bar.rating)
                     dialog.dismiss()
+                    httpRefreshPage(r_id!!)
+                    //httpGetImage(r_id!!)
                 }
             }
             addDialog.create()
@@ -83,11 +110,12 @@ class RestaurantActivity : AppCompatActivity() {
 
         }
 
-        refresh()
+        httpRefreshComment(r_id!!)
 
         swipeRefresh.setOnRefreshListener () {
-            refresh()
-            swipeRefresh.isRefreshing = false
+            httpRefreshPage(r_id!!)
+            //httpGetImage(r_id!!)
+            httpRefreshComment(r_id!!)
         }
 
         postCommentButton.setOnClickListener() {
@@ -98,9 +126,14 @@ class RestaurantActivity : AppCompatActivity() {
 
             postDialog.setView(p)
             postDialog.setPositiveButton("Upload"){ dialog,_->
-                if (bar.rating >= 0.5f && context.text != null) {
+                if (bar.rating >= 0.5f && context.text.toString().length > 0) {
                     //post action
+                    Log.w("myTag11", "1")
+                    httpPostComment(r_id!!, username!!, context.text.toString(), bar.rating)
+                    Log.w("myTag11", "2")
                     dialog.dismiss()
+                    httpRefreshPage(r_id!!)
+                    httpRefreshComment(r_id!!)
                 }
             }
             postDialog.create()
@@ -108,18 +141,151 @@ class RestaurantActivity : AppCompatActivity() {
         }
 
     }
-    private fun refresh() {
+    private fun httpGetImage(ID: String) {
+        val image = findViewById<ImageView>(R.id.restaurantPageImage)
+        val url = "http://10.68.104.199:8081/canteens/canteenLargeImage?canteenID=" + ID
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.GET, url, null,
+            Response.Listener { response ->
+                val ret = response.get("url").toString()
+                Log.w("myTagImage", "http://10.68.104.199:8081/" + ret)
+                DownloadImageFromInternet(image).execute("http://10.68.104.199:8081/" + ret)
+                Log.w("myTagImage", response.toString())
+            }, Response.ErrorListener { error ->
+                Log.w("myTagImage", error.toString())
+            }
+        )
+        Volley.newRequestQueue(this).add(jsonObjectRequest)
 
-        commentList = ArrayList()
-        for (i in 0..20) {
-            commentList.add(CommentData("Commenter Name".plus(i), 2.5f, "00:00 00/00/0000", "Comment Context\n"))
+    }
+
+    private fun httpUpdateRestaurantCongestion(ID: String, rating: Float) {
+        class Data(
+            @Json(index = 1) val canteenID: String,
+            @Json(index = 2) val userID: String,
+            @Json(index = 3) val congestionRanking: Double
+        )
+        val url = "http://10.68.104.199:8081/canteens/postcongestion"
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, url, JSONObject(Klaxon().toJsonString(Data(ID, "NULL", rating.toDouble()))),
+            Response.Listener { response ->
+                Log.w("myTag", response.toString())
+            }, Response.ErrorListener { error ->
+                Log.w("myTag", error.toString())
+            }
+        )
+        Volley.newRequestQueue(this).add(jsonObjectRequest)
+
+    }
+
+    private fun httpPostComment(r_id:String, username: String, content: String, rating: Float) {
+        class Data(
+            @Json(index = 1) val canteenID: String,
+            @Json(index = 2) val username: String,
+            @Json(index = 3) val content: String,
+            @Json(index = 4) val ranking: Double,
+        )
+        val url = "http://10.68.104.199:8081/canteens/postcomment"
+        Log.w("myTag11", "Here")
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, url, JSONObject(Klaxon().toJsonString(Data(r_id, username, content, rating.toDouble()))),
+            Response.Listener { response ->
+                Log.w("myTag11", response.toString())
+            }, Response.ErrorListener { error ->
+                Log.w("myTag11", error.toString())
+            }
+        )
+        Volley.newRequestQueue(this).add(jsonObjectRequest)
+
+    }
+    private fun httpRefreshPage(ID: String) {
+        val pageRating = findViewById<AndRatingBar>(R.id.restaurantPageRating)
+        val pageCongestion = findViewById<AndRatingBar>(R.id.restaurantPageCongestion)
+
+        val url_rating = "http://10.68.104.199:8081/canteens/ranking?canteenID=" + ID
+        val jsonObjectRequest1 = JsonObjectRequest(
+            Request.Method.GET, url_rating, null,
+            Response.Listener { response ->
+                Log.w("myTag", response.toString())
+                pageRating.rating = response.get("ranking").toString().toFloat()
+            }, Response.ErrorListener { error ->
+                Log.w("myTag", error.toString())
+            }
+        )
+        Volley.newRequestQueue(this).add(jsonObjectRequest1)
+        val url_congestion = "http://10.68.104.199:8081/canteens/congestion?canteenID=" + ID
+        val jsonObjectRequest2 = JsonObjectRequest(
+            Request.Method.GET, url_congestion, null,
+            Response.Listener { response ->
+                Log.w("myTag", response.toString())
+                pageCongestion.rating = response.get("ranking").toString().toFloat()
+            }, Response.ErrorListener { error ->
+                Log.w("myTag", error.toString())
+            }
+        )
+        Volley.newRequestQueue(this).add(jsonObjectRequest2)
+
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun httpRefreshComment(ID: String) {
+        val swipeRefresh = findViewById<SwipeRefreshLayout>(R.id.commentSwipeRefresh)
+        val url = "http://10.68.104.199:8081/canteens/comments?canteenID=" + ID
+        val jsonArrayRequest = JsonArrayRequest(
+            Request.Method.GET, url, null,
+            Response.Listener { response ->
+                Log.w("myTag1", response.toString())
+
+                commentList = ArrayList()
+                for (i in 0 until response.length()) {
+                    val item = response.getJSONObject(i)
+
+                    val c_user = item.get("username").toString()
+                    val c_rating = item.get("ranking").toString().toFloat()
+
+                    val c_time_raw = item.get("time").toString()
+                    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                    val date: Date = format.parse(c_time_raw)
+
+
+                    val c_content = item.get("content").toString()
+                    commentList.add(CommentData(c_user, c_rating, date.toString(), c_content))
+                }
+                recv = findViewById(R.id.commentRecycler)
+                commentAdapter = CommentAdapter(this,commentList)
+                recv.layoutManager = LinearLayoutManager(this)
+                recv.setHasFixedSize(false)
+                recv.adapter = commentAdapter
+
+            }, Response.ErrorListener { error ->
+                Log.w("myTag1", error.toString())
+            }
+        )
+        Volley.newRequestQueue(this).add(jsonArrayRequest)
+        swipeRefresh.isRefreshing = false
+
+    }
+
+    @Suppress("DEPRECATION")
+    private inner class DownloadImageFromInternet(var imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {
+        init {
+            Toast.makeText(applicationContext, "Please wait, it may take a few minute...",     Toast.LENGTH_SHORT).show()
         }
-        recv = findViewById(R.id.commentRecycler)
-        commentAdapter = CommentAdapter(this,commentList)
-        recv.layoutManager = LinearLayoutManager(this)
-        //recv.isNestedScrollingEnabled = false
-        recv.setHasFixedSize(false)
-        recv.adapter = commentAdapter
+        override fun doInBackground(vararg urls: String): Bitmap? {
+            val imageURL = urls[0]
+            var image: Bitmap? = null
+            try {
+                val `in` = java.net.URL(imageURL).openStream()
+                image = BitmapFactory.decodeStream(`in`)
+            }
+            catch (e: Exception) {
+                Log.e("Error Message", e.message.toString())
+                e.printStackTrace()
+            }
+            return image
+        }
+        override fun onPostExecute(result: Bitmap?) {
+            imageView.setImageBitmap(result)
+        }
     }
 
 }
