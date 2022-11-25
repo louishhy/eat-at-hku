@@ -3,6 +3,9 @@ package hk.hkucs.demo.view
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.AsyncTask
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +22,7 @@ import com.beust.klaxon.Klaxon
 import hk.hkucs.demo.PageActivity
 import hk.hkucs.demo.R
 import hk.hkucs.demo.RestaurantActivity
+import hk.hkucs.demo.global.IP
 import hk.hkucs.demo.model.RestaurantData
 import org.json.JSONObject
 import per.wsj.library.AndRatingBar
@@ -34,6 +38,7 @@ class RestaurantAdapter(val c:Context, val restaurantList:ArrayList<RestaurantDa
         var r_congestion: AndRatingBar
         var r_update:Button
         var r_infopage:Button
+        var r_image:ImageView
 
         init {
             //r_image = v.findViewById<ImageView>(R.id.restaurantImage)
@@ -43,6 +48,7 @@ class RestaurantAdapter(val c:Context, val restaurantList:ArrayList<RestaurantDa
             r_congestion = v.findViewById<AndRatingBar>(R.id.restaurantItemCongestion)
             r_update = v.findViewById<Button>(R.id.restaurantUpdateButton)
             r_infopage = v.findViewById<Button>(R.id.restaurantPage)
+            r_image = v.findViewById<ImageView>(R.id.restaurantItemImage)
         }
 
     }
@@ -90,6 +96,24 @@ class RestaurantAdapter(val c:Context, val restaurantList:ArrayList<RestaurantDa
             (c as PageActivity).overridePendingTransition(R.anim.left_enter,R.anim.left_exit)
         }
 
+        //image
+        val url = IP.ipAddress + "canteens/canteenSmallImage?canteenID=" + newList.restaurantID
+        //val url = "http://10.68.104.199:8081/canteens/canteenLargeImage?canteenID=" + newList.restaurantID
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.GET, url, null,
+            Response.Listener { response ->
+                val ret = response.get("url").toString()
+                //Log.w("myTagImage", "http://10.68.104.199:8081/" + ret)
+                DownloadImageFromInternet(holder.r_image).execute("http://10.68.104.199:8081/" + ret)
+                //Log.w("myTagImage", response.toString())
+            }, Response.ErrorListener { error ->
+                Log.w("myTagImage", error.toString())
+            }
+        )
+        Volley.newRequestQueue(c).add(jsonObjectRequest)
+
+        //
+
     }
 
     override fun getItemCount(): Int {
@@ -102,7 +126,8 @@ class RestaurantAdapter(val c:Context, val restaurantList:ArrayList<RestaurantDa
             @Json(index = 2) val userID: String,
             @Json(index = 2) val congestionRanking: Double
         )
-        val url = "http://10.68.104.199:8081/canteens/postcongestion"
+        val url = IP.ipAddress + "canteens/postcongestion"
+        //val url = "http://10.68.104.199:8081/canteens/postcongestion"
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.POST, url, JSONObject(Klaxon().toJsonString(Data(ID, "NULL", rating.toDouble()))),
             Response.Listener { response ->
@@ -114,5 +139,28 @@ class RestaurantAdapter(val c:Context, val restaurantList:ArrayList<RestaurantDa
         )
         Volley.newRequestQueue(c).add(jsonObjectRequest)
 
+    }
+
+    @Suppress("DEPRECATION")
+    private inner class DownloadImageFromInternet(var imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {
+        init {
+            //Toast.makeText(applicationContext, "Please wait, it may take a few minute...",     Toast.LENGTH_SHORT).show()
+        }
+        override fun doInBackground(vararg urls: String): Bitmap? {
+            val imageURL = urls[0]
+            var image: Bitmap? = null
+            try {
+                val `in` = java.net.URL(imageURL).openStream()
+                image = BitmapFactory.decodeStream(`in`)
+            }
+            catch (e: Exception) {
+                Log.e("Error Message", e.message.toString())
+                e.printStackTrace()
+            }
+            return image
+        }
+        override fun onPostExecute(result: Bitmap?) {
+            imageView.setImageBitmap(result)
+        }
     }
 }

@@ -21,6 +21,7 @@ import com.beust.klaxon.Json
 import com.beust.klaxon.Klaxon
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import hk.hkucs.demo.global.IP
 import org.json.JSONObject
 
 
@@ -96,7 +97,8 @@ class MainActivity : AppCompatActivity() {
             @Json(index = 2) val password: String
         )
         //Log.w("myTag", Klaxon().toJsonString(Data(username, pwd)))
-        val url = "http://10.68.104.199:8081/login/verification"
+        val url = IP.ipAddress + "login/verification"
+        //val url = "http://10.68.104.199:8081/login/verification"
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.POST, url, JSONObject(Klaxon().toJsonString(Data(username, pwd))),
             Response.Listener { response ->
@@ -125,7 +127,8 @@ class MainActivity : AppCompatActivity() {
             @Json(index = 2) val password: String,
             @Json(index = 2) val isAdmin: String
         )
-        val url = "http://10.68.104.199:8081/signup"
+        val url = IP.ipAddress + "signup"
+        //val url = "http://10.68.104.199:8081/signup"
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.POST, url, JSONObject(Klaxon().toJsonString(Data(username, pwd, "false"))),
             Response.Listener { response ->

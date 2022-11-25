@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="120dp">
             <ImageView
-
+                android:id="@+id/restaurantItemImage"
                 android:src="@drawable/hku"
                 android:background="@color/green"
                 android:layout_centerVertical="true"
@@ -30,7 +30,6 @@
             </ImageView>
 
             <LinearLayout
-                android:id="@+id/restaurantImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -111,7 +110,7 @@
                             android:isIndicator="true"
                             android:layout_width="wrap_content"
                             android:layout_height="14dp"
-                            app:starColor="@color/yellow"
+                            app:starColor="@color/orange"
                             app:bgDrawable="@color/tansparentColor"
                             android:numStars="5"
                             android:rating="3.5"/>

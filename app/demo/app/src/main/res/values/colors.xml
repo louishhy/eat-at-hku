@@ -14,5 +14,6 @@
     <color name="light_green">#A9C8B3</color>
     <color name="yellow">#B8BC38</color>
     <color name="gray">#AAAAAA</color>
+    <color name="orange">#D38B3C</color>
     <color name="dialogButtonText">#3F7A57</color>
 </resources>

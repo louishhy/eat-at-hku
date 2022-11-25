@@ -21,6 +21,7 @@
     </TextView>
 
     <TextView
+        android:id="@+id/infoText"
         android:layout_margin="24dp"
         android:layout_gravity="center"
         android:text="testing testing testing testing\ntesting testing testing testing\ntesting testing testing testing\ntesting testing testing testing"

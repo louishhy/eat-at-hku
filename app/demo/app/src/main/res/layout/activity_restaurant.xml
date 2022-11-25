@@ -130,7 +130,7 @@
                         android:isIndicator="true"
                         android:layout_width="wrap_content"
                         android:layout_height="22dp"
-                        app:starColor="@color/yellow"
+                        app:starColor="@color/orange"
                         app:bgDrawable="@color/tansparentColor"
                         android:numStars="5"
                         android:rating="3.5"/>

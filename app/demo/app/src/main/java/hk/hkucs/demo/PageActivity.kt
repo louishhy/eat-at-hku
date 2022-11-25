@@ -18,6 +18,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.beust.klaxon.Klaxon
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import hk.hkucs.demo.global.IP
 import hk.hkucs.demo.model.RestaurantData
 import hk.hkucs.demo.view.RestaurantAdapter
 import org.json.JSONObject
@@ -80,7 +81,8 @@ class PageActivity : AppCompatActivity() {
 
     private fun httpRefresh(order: String) {
         val swipeRefresh = findViewById<SwipeRefreshLayout>(R.id.mSwipeRefresh)
-        val url = "http://10.68.104.199:8081/canteens/get_all_canteens" + "?sortby=" + order
+        val url = IP.ipAddress + "canteens/get_all_canteens" + "?sortby=" + order
+        //val url = "http://10.68.104.199:8081/canteens/get_all_canteens" + "?sortby=" + order
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,
             Response.Listener { response ->

@@ -25,6 +25,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.beust.klaxon.Json
 import com.beust.klaxon.Klaxon
+import hk.hkucs.demo.global.IP
 import hk.hkucs.demo.model.CommentData
 import hk.hkucs.demo.model.RestaurantData
 import hk.hkucs.demo.view.CommentAdapter
@@ -143,12 +144,13 @@ class RestaurantActivity : AppCompatActivity() {
     }
     private fun httpGetImage(ID: String) {
         val image = findViewById<ImageView>(R.id.restaurantPageImage)
-        val url = "http://10.68.104.199:8081/canteens/canteenLargeImage?canteenID=" + ID
+        val url = IP.ipAddress + "canteens/canteenLargeImage?canteenID=" + ID
+        //val url = "http://10.68.104.199:8081/canteens/canteenLargeImage?canteenID=" + ID
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null,
             Response.Listener { response ->
                 val ret = response.get("url").toString()
-                Log.w("myTagImage", "http://10.68.104.199:8081/" + ret)
+                //Log.w("myTagImage", "http://10.68.104.199:8081/" + ret)
                 DownloadImageFromInternet(image).execute("http://10.68.104.199:8081/" + ret)
                 Log.w("myTagImage", response.toString())
             }, Response.ErrorListener { error ->
@@ -165,7 +167,8 @@ class RestaurantActivity : AppCompatActivity() {
             @Json(index = 2) val userID: String,
             @Json(index = 3) val congestionRanking: Double
         )
-        val url = "http://10.68.104.199:8081/canteens/postcongestion"
+        val url = IP.ipAddress + "canteens/postcongestion"
+        //val url = "http://10.68.104.199:8081/canteens/postcongestion"
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.POST, url, JSONObject(Klaxon().toJsonString(Data(ID, "NULL", rating.toDouble()))),
             Response.Listener { response ->
@@ -185,7 +188,8 @@ class RestaurantActivity : AppCompatActivity() {
             @Json(index = 3) val content: String,
             @Json(index = 4) val ranking: Double,
         )
-        val url = "http://10.68.104.199:8081/canteens/postcomment"
+        val url = IP.ipAddress + "canteens/postcomment"
+        //val url = "http://10.68.104.199:8081/canteens/postcomment"
         Log.w("myTag11", "Here")
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.POST, url, JSONObject(Klaxon().toJsonString(Data(r_id, username, content, rating.toDouble()))),
@@ -201,8 +205,8 @@ class RestaurantActivity : AppCompatActivity() {
     private fun httpRefreshPage(ID: String) {
         val pageRating = findViewById<AndRatingBar>(R.id.restaurantPageRating)
         val pageCongestion = findViewById<AndRatingBar>(R.id.restaurantPageCongestion)
-
-        val url_rating = "http://10.68.104.199:8081/canteens/ranking?canteenID=" + ID
+        val url_rating = IP.ipAddress + "canteens/ranking?canteenID=" + ID
+        //val url_rating = "http://10.68.104.199:8081/canteens/ranking?canteenID=" + ID
         val jsonObjectRequest1 = JsonObjectRequest(
             Request.Method.GET, url_rating, null,
             Response.Listener { response ->
@@ -213,7 +217,8 @@ class RestaurantActivity : AppCompatActivity() {
             }
         )
         Volley.newRequestQueue(this).add(jsonObjectRequest1)
-        val url_congestion = "http://10.68.104.199:8081/canteens/congestion?canteenID=" + ID
+        val url_congestion = IP.ipAddress + "canteens/congestion?canteenID=" + ID
+        //val url_congestion = "http://10.68.104.199:8081/canteens/congestion?canteenID=" + ID
         val jsonObjectRequest2 = JsonObjectRequest(
             Request.Method.GET, url_congestion, null,
             Response.Listener { response ->
@@ -229,7 +234,8 @@ class RestaurantActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun httpRefreshComment(ID: String) {
         val swipeRefresh = findViewById<SwipeRefreshLayout>(R.id.commentSwipeRefresh)
-        val url = "http://10.68.104.199:8081/canteens/comments?canteenID=" + ID
+        val url = IP.ipAddress +"canteens/comments?canteenID=" + ID
+        //val url = "http://10.68.104.199:8081/canteens/comments?canteenID=" + ID
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,
             Response.Listener { response ->
@@ -268,7 +274,7 @@ class RestaurantActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     private inner class DownloadImageFromInternet(var imageView: ImageView) : AsyncTask<String, Void, Bitmap?>() {
         init {
-            Toast.makeText(applicationContext, "Please wait, it may take a few minute...",     Toast.LENGTH_SHORT).show()
+            //Toast.makeText(applicationContext, "Please wait, it may take a few minute...",     Toast.LENGTH_SHORT).show()
         }
         override fun doInBackground(vararg urls: String): Bitmap? {
             val imageURL = urls[0]

@@ -13,6 +13,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.android.volley.toolbox.Volley.newRequestQueue
+import hk.hkucs.demo.global.IP
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -26,10 +27,14 @@ class InfoActivity: AppCompatActivity() {
         val infoResponse = findViewById<TextView>(R.id.infoResponse)
         val infoTestButton = findViewById<Button>(R.id.infoTest)
         val infoBackButton = findViewById<Button>(R.id.infoBack)
+        val infoText = findViewById<TextView>(R.id.infoText)
+
+        infoText.text = "Eat @ HKU Application demo version\nAndroid Developer: Zhu Wendi\nBackend Developer: Huang Haoyu\n" +
+                        ""
 
         infoTestButton.setOnClickListener() {
 
-            val url = "http://10.68.104.199:8081/test"
+            val url = IP.ipAddress + "test"
             val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
                 Response.Listener { response ->
                     infoResponse.text = response.get("result").toString()

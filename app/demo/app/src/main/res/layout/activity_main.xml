@@ -10,10 +10,10 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:text="Eat at HKU"
+        android:text="Eat @ HKU"
         android:textSize="30dp"
         android:layout_margin="50dp"
-        android:textStyle="bold|normal"
+        android:textStyle="normal|bold"
         android:textColor="@color/white"
         android:gravity="center"
         android:layout_width="match_parent"
@@ -275,7 +275,7 @@
     <Button
         android:id="@+id/infoButton"
         android:text="\?"
-        android:elevation="15dp"
+        android:elevation="20dp"
         android:textSize="20sp"
         android:layout_width="50dp"
         android:layout_height="50dp"
