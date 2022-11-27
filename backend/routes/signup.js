@@ -26,7 +26,7 @@ router.post('/', async function(req, res){
         res.status(500).send("Error in inserting the record")
     }
     
-    res.json({"result": "succeed"})
+    res.json({"result": "success"})
 })
 
 module.exports = router

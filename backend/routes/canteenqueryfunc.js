@@ -6,7 +6,6 @@ async function getComments(database, canteenID){
     try{
         let commentsCollection = database.get('comments')
         let docs = await commentsCollection.find({'canteenID': canteenID.toString()})
-        console.log(docs)
         return docs
     }
     catch(err){
@@ -50,9 +49,7 @@ async function getRanking(database, canteenID){
 
 
 async function getCongestionRanking(database, canteenID, effectiveTimespanInMinutes){
-    console.log(canteenID + " " + effectiveTimespanInMinutes)
     let reports = await getCongestionReports(database, canteenID, effectiveTimespanInMinutes)
-    console.log(`Reports: ${reports}`)
     if (reports.length == 0) return 0
 
     let totalCongestionRanking = 0
@@ -63,13 +60,6 @@ async function getCongestionRanking(database, canteenID, effectiveTimespanInMinu
 }
 
 
-async function getMenuImage(database, canteenID){
-    let menuImagesCollection = database.get('menuImages')
-    let docs = await menuImagesCollection.find({"canteenID": canteenID.toString()})
-    if (docs.length == 0){
-        return null
-    }
-    else return docs[0].url
-}
 
-module.exports = { getComments, getRanking, getCongestionRanking, getCongestionReports, getMenuImage }
+
+module.exports = { getComments, getRanking, getCongestionRanking, getCongestionReports }

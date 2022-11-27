@@ -2,6 +2,19 @@ let express = require('express')
 let router = express.Router()
 let queryfunc = require('./canteenqueryfunc')
 const EFFECTIVE_TIMESPAN_IN_MINUTES = 30
+const NULL_IMAGE_URL = "images/nothing_here.png"
+
+function null_image_substitution(doc) {
+    if (doc.smallImgUrl === ""){
+        doc.smallImgUrl = NULL_IMAGE_URL
+    }
+
+    if (doc.menuImgUrl === ""){
+        doc.menuImgUrl = NULL_IMAGE_URL
+    }
+
+    return doc
+}
 
 // GET query functions
 router.get('/get_all_canteens', async (req, res) => {
@@ -11,9 +24,9 @@ router.get('/get_all_canteens', async (req, res) => {
         
         let docs = await canteensCollection.find()
         for (let canteen of docs){
-            console.log(canteen._id)
             canteen.ranking = await queryfunc.getRanking(req.db, canteen._id)
             canteen.congestionRanking = await queryfunc.getCongestionRanking(req.db, canteen._id, EFFECTIVE_TIMESPAN_IN_MINUTES)
+            canteen = null_image_substitution(canteen)
         }
 
         if (sortby == "alphabetical"){
@@ -57,6 +70,12 @@ router.get('/comments', async (req, res) => {
     let db = req.db
     let canteenID = req.query.canteenID
     let docs = await queryfunc.getComments(db, canteenID)
+    docs.sort((a, b) => {
+        let a_date = Date(a.time)
+        let b_date = Date(b.time)
+        if (a_date < b_date) return 1
+        else return -1
+    })
     res.json(docs)
 })
 
@@ -76,12 +95,51 @@ router.get('/congestionReport', async (req, res) => {
     res.json(docs)
 })
 
+router.get('/canteenLargeImage', async (req, res) => {
+    let db = req.db
+    let canteenID = req.query.canteenID
+    let canteensCollection = db.get('canteens')
+    let docs = await canteensCollection.find({"_id": canteenID})
+    if (docs.length != 0){
+        let url = docs[0].largeImgUrl
+        res.json({"url": url})
+    }
+    else{
+        res.status(400).send("Check your canteen ID")
+    }
+})
+
+router.get('/canteenSmallImage', async (req, res) => {
+    let db = req.db
+    let canteenID = req.query.canteenID
+    let canteensCollection = db.get('canteens')
+    let docs = await canteensCollection.find({"_id": canteenID})
+    if (docs.length != 0){
+        let doc = docs[0]
+        doc = null_image_substitution(doc)
+        let url = doc.smallImgUrl
+        res.json({"url": url})
+    }
+    else{
+        res.status(400).send("Check your canteen ID")
+    }
+})
+
 
 router.get('/menuImage', async (req, res) => {
     let db = req.db
     let canteenID = req.query.canteenID
-    let url = await queryfunc.getMenuImage(db, canteenID)
-    res.json(url)
+    let canteensCollection = db.get('canteens')
+    let docs = await canteensCollection.find({"_id": canteenID})
+    if (docs.length != 0){
+        let doc = docs[0]
+        doc = null_image_substitution(doc)
+        let url = doc.menuImgUrl
+        res.json({"url": url})
+    }
+    else{
+        res.status(400).send("Check your canteen ID")
+    }
 })
 
 
@@ -93,15 +151,14 @@ router.post('/postcomment', async function(req, res){
     applications/json
     {
         canteenID: str,
-        userID: str,
+        username: str,
         content: str - the content of the review,
-        ranking: int32 - ranking out of 5,
-        time: str in format of "<YYYY-MM-DD>T<hh:mm:ss>+08:00", for example, "2022-11-20T09:50:00.000+08:00"
+        ranking: double
     }
     */
     let commentsCollection = req.db.get('comments')
     let info = req.body
-    info.time = new Date(info.time)  // Change into date format
+    info.time = new Date()  // Record the time
 
     try{
         await commentsCollection.insert(info)
@@ -121,13 +178,12 @@ router.post('/postcongestion', async function(req, res){
     {
         canteenID: str,
         userID: str,
-        congestionRanking: int32 - ranking out of 5,
-        time: str in format of "<YYYY-MM-DD>T<hh:mm:ss>+08:00", for example, "2022-11-20T09:50:00.000+08:00"
+        congestionRanking: double
     }
     */
     let congestionReportsCollection = req.db.get('congestionReports')
     let info = req.body
-    info.time = new Date(info.time)  // Change into date format
+    info.time = new Date()  // Change into date format
 
     try{
         await congestionReportsCollection.insert(info)
