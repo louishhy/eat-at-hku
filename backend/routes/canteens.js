@@ -102,6 +102,7 @@ router.get('/canteenLargeImage', async (req, res) => {
     let docs = await canteensCollection.find({"_id": canteenID})
     if (docs.length != 0){
         let url = docs[0].largeImgUrl
+        console.log(url)
         res.json({"url": url})
     }
     else{

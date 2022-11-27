@@ -5,6 +5,6 @@ import android.app.Application
 public class IP : Application() {
     companion object {
         @JvmField
-        var ipAddress: String = "http://10.68.104.199:8081/"
+        var ipAddress: String = "http://172.20.10.5:8081/"
     }
 }
