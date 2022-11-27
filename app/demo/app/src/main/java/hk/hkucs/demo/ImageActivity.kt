@@ -57,8 +57,8 @@ class ImageActivity: AppCompatActivity() {
             Request.Method.GET, url, null,
             Response.Listener { response ->
                 val ret = response.get("url").toString()
-                Log.w("myTagImage", "http://10.68.104.199:8081/" + ret)
-                DownloadImageFromInternet(image).execute("http://10.68.104.199:8081/" + ret)
+                //Log.w("myTagImage", "http://10.68.104.199:8081/" + ret)
+                DownloadImageFromInternet(image).execute(IP.ipAddress + ret)
                 Log.w("myTagImage", response.toString())
             }, Response.ErrorListener { error ->
                 Log.w("myTagImage", error.toString())
