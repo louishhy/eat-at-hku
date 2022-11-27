@@ -104,7 +104,7 @@ class RestaurantAdapter(val c:Context, val restaurantList:ArrayList<RestaurantDa
             Response.Listener { response ->
                 val ret = response.get("url").toString()
                 //Log.w("myTagImage", "http://10.68.104.199:8081/" + ret)
-                DownloadImageFromInternet(holder.r_image).execute("http://10.68.104.199:8081/" + ret)
+                DownloadImageFromInternet(holder.r_image).execute(IP.ipAddress + ret)
                 //Log.w("myTagImage", response.toString())
             }, Response.ErrorListener { error ->
                 Log.w("myTagImage", error.toString())
