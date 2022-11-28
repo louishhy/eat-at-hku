@@ -250,11 +250,15 @@ class RestaurantActivity : AppCompatActivity() {
 
                     val c_time_raw = item.get("time").toString()
                     val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                    format.timeZone = TimeZone.getTimeZone("UTC")  //In alignment with MongoDB UTC timezone.
                     val date: Date = format.parse(c_time_raw)
+                    format.timeZone = TimeZone.getDefault()  // Switch back to HKT
+                    format.applyPattern("yyyy-MM-dd HH:mm:ss z")
+                    val formattedDate: String = format.format(date)
 
 
                     val c_content = item.get("content").toString()
-                    commentList.add(CommentData(c_user, c_rating, date.toString(), c_content))
+                    commentList.add(CommentData(c_user, c_rating, formattedDate, c_content))
                 }
                 recv = findViewById(R.id.commentRecycler)
                 commentAdapter = CommentAdapter(this,commentList)
