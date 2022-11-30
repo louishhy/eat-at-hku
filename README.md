@@ -2,6 +2,10 @@
 
 A HKU COMP3330 prototype application for HKU crowdsourced canteen congestion info retrieval, commenting, and menu exploration.
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/26505854/204702143-6fd5c436-74eb-4190-ba6f-deaa0948319d.png" width=500/>
+</p>
+
 ## Grouping
 Group 11
 
