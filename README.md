@@ -3,7 +3,7 @@
 A HKU COMP3330 prototype application for HKU crowdsourced canteen congestion info retrieval, commenting, and menu exploration.
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/26505854/204702143-6fd5c436-74eb-4190-ba6f-deaa0948319d.png" width=500/>
+  <img src="https://user-images.githubusercontent.com/26505854/204704927-b67c3a69-bcf0-4edf-a853-d09d4c5d782e.png" width=500/>
 </p>
 
 ## Grouping
